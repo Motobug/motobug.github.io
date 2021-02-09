@@ -2,5 +2,5 @@
  "version": "FPM v2.25 CHAD",
  "changelog": "Fix updater paths \nUpdate to P+ 2.25",
  "update-page": "https://projectplusgame.com/download/",
- "download-page-windows": "https://drive.google.com/u/0/uc?export=download&confirm=cCyw&id=1HM9TI3aOMucysQIMGU4pEr_Bp0vmFzCg",
+ "download-page-windows": "https://github.com/jlambert360/PPlusReleases/releases/download/2.25/PPlusv2.25Windows.zip",
  "download-page-mac": "https://github.com/jlambert360/PPlusReleases/releases/download/2.25/PPlusv2.25Mac.zip"}
