@@ -1,6 +1,6 @@
-{"hash": "53ae177d8df50b7a1c79566c92ca39fff8957195",
+{"hash": "4f866be5f2010b514f3a8cb85de0a83b8662e4d2",
  "version": "FPM v2.5.2 SG",
- "changelog": "Updated build to v2.5.2 \nLarge update, feat. stagelist updates, port colors, new costumes, and more! ",
- "update-page": "https://chadbuild.motobug.net/",
+ "changelog": "Updated build to v2.5.2 \nIf you're seeing this, you shouldn't be! ",
+ "update-page": "https://motobug.github.io/updateSG.json/",
  "download-page-windows": "https://onedrive.live.com/download?resid=F6B7B9FAC71330DC%213115&authkey=!AFSu4B6RVaK8jfg",
  "download-page-mac": "https://github.com/jlambert360/PPlusReleases/releases/download/2.25/PPlusv2.29Mac.zip"}
