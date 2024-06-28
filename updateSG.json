@@ -1,6 +1,6 @@
-{"hash": "4dfe882a1484ba243098af41239ff7aa87aadd89",
- "version": "FPM v3.0.1 SG",
- "changelog": "Updated build to Project+ v3.0.1 \nFeaturing balance updates and new content! 3.0.1 fixes physics oddities.",
+{"hash": "c234d79a3abec8e3b983a3e8251faa027847acd5",
+ "version": "FPM v3.0.2 SG",
+ "changelog": "Updated build to Project+ v3.0.2 \nFixes for the balance patch update",
  "update-page": "https://motobug.github.io/updateSG.json/",
- "download-page-windows": "https://github.com/Motobug/Smashing-Grounds-Build/releases/download/v3.0.1/Smashing.Grounds.Netplay.Build.v3.0.1.zip",
+ "download-page-windows": "https://github.com/Motobug/Smashing-Grounds-Build/releases/download/v3.0.2/Smashing.Grounds.Netplay.Build.v3.0.2.zip",
  "download-page-mac": "https://github.com/jlambert360/PPlusReleases/releases/download/2.25/PPlusv2.29Mac.zip"}
