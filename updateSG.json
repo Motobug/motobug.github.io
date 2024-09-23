@@ -1,6 +1,6 @@
-{"hash": "c234d79a3abec8e3b983a3e8251faa027847acd5",
- "version": "FPM v3.0.2 SG",
- "changelog": "Updated build to Project+ v3.0.2 \nFixes for the balance patch update",
+{"hash": "2b2d8171359428f1237c30c6f3457828a8346f09",
+ "version": "FPM v3.0.5 SG",
+ "changelog": "Updated build to Project+ v3.0.5 \nMore features, fixes, and new Bowser's Castle tracklist",
  "update-page": "https://motobug.github.io/updateSG.json/",
- "download-page-windows": "https://github.com/Motobug/Smashing-Grounds-Build/releases/download/v3.0.2/Smashing.Grounds.Netplay.Build.v3.0.2.zip",
+ "download-page-windows": "https://github.com/Motobug/Smashing-Grounds-Build/releases/download/v3.0.5/Smashing.Grounds.Netplay.Build.v3.0.5.zip",
  "download-page-mac": "https://github.com/jlambert360/PPlusReleases/releases/download/2.25/PPlusv2.29Mac.zip"}
