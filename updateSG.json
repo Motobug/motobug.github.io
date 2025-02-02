@@ -1,6 +1,6 @@
-{"hash": "189a5a1628c50f60661122e57462a4f361d7cb2a",
- "version": "FPM v3.0.5-SL1 SG",
- "changelog": "Updated to the first stagelist of our project, from Thalia and Woodley!",
+{"hash": "e0290ec1382c877bffcc5e06ff1c2941e6b0eee1",
+ "version": "FPM v3.0.5-SL2 SG",
+ "changelog": "Updated to the second stagelist of our project, from sfy bees! /n Also, skin updates and tag updates!",
  "update-page": "https://motobug.github.io/updateSG.json/",
- "download-page-windows": "https://github.com/Motobug/Smashing-Grounds-Build/releases/download/v3.0.5/Smashing.Grounds.Netplay.Build.v3.0.5.SL1.zip",
+ "download-page-windows": "https://github.com/Motobug/Smashing-Grounds-Build/releases/download/v3.0.5/Smashing.Grounds.Netplay.Build.v3.0.5.SL2.zip",
  "download-page-mac": "https://github.com/jlambert360/PPlusReleases/releases/download/2.25/PPlusv2.29Mac.zip"}
