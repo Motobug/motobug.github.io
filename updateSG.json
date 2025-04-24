@@ -1,6 +1,6 @@
-{"hash": "535808d3740892a291c0bd4d18a02d443f09cba4",
- "version": "FPM v3.0.5-SL4 SG",
- "changelog": "Updated to the fourth stagelist of our project, from kate + shay! Also, Orange Yoshi and a new menu song!",
+{"hash": "a8795ebf1f26df8461b0430885202017c64943bf",
+ "version": "FPM v3.1.0-SL4 SG",
+ "changelog": "Updated to Project+ v3.1.0; includes new skins, features, fixes, and more!",
  "update-page": "https://motobug.github.io/updateSG.json/",
- "download-page-windows": "https://github.com/Motobug/Smashing-Grounds-Build/releases/download/v3.0.5/Smashing.Grounds.Netplay.Build.v3.0.5.SL4.zip",
+ "download-page-windows": "https://github.com/Motobug/Smashing-Grounds-Build/releases/download/v3.1.0/Smashing.Grounds.Netplay.Build.v3.1.0.SL4.zip",
  "download-page-mac": "https://github.com/jlambert360/PPlusReleases/releases/download/2.25/PPlusv2.29Mac.zip"}
