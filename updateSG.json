@@ -1,6 +1,6 @@
-{"hash": "ba388c2ae4df9aa28ac334014f6dec46167f9736",
- "version": "FPM v3.1.2-SL5 SG",
- "changelog": "Updated to Project+ v3.1.2; Features Matt's list, new BP list, and a couple skin changes.",
+{"hash": "8a7175c4dc28aa47fb9ebec108332b98d92ad81f",
+ "version": "FPM v3.1.2-SL6 SG",
+ "changelog": "Updated to SL6 (KoE); features a few new skins and improvements.",
  "update-page": "https://motobug.github.io/updateSG.json/",
- "download-page-windows": "https://github.com/Motobug/Smashing-Grounds-Build/releases/download/v3.1.2/Smashing.Grounds.Netplay.Build.v3.1.2.SL5.zip",
+ "download-page-windows": "https://github.com/Motobug/Smashing-Grounds-Build/releases/download/v3.1.2/Smashing.Grounds.Netplay.Build.v3.1.2.SL6.zip",
  "download-page-mac": "https://github.com/jlambert360/PPlusReleases/releases/download/2.25/PPlusv2.29Mac.zip"}
