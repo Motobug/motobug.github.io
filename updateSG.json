@@ -1,6 +1,6 @@
-{"hash": "8a7175c4dc28aa47fb9ebec108332b98d92ad81f",
- "version": "FPM v3.1.2-SL6 SG",
- "changelog": "Updated to SL6 (KoE); features a few new skins and improvements.",
+{"hash": "6eeb984738a2f5fdc3891bc175826dfa91a12250",
+ "version": "SG Dolphin v3.1.2-SL7-mainline",
+ "changelog": "Updated to SL7 (Flarp); also moves us over to mainline Dolphin!",
  "update-page": "https://motobug.github.io/updateSG.json/",
- "download-page-windows": "https://github.com/Motobug/Smashing-Grounds-Build/releases/download/v3.1.2/Smashing.Grounds.Netplay.Build.v3.1.2.SL6.zip",
+ "download-page-windows": "https://github.com/Motobug/Smashing-Grounds-Build/releases/download/v3.1.2/Smashing.Grounds.Netplay.Build.v3.1.2.SL7.zip",
  "download-page-mac": "https://github.com/jlambert360/PPlusReleases/releases/download/2.25/PPlusv2.29Mac.zip"}
