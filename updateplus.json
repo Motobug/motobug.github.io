@@ -1,0 +1,6 @@
+{"hash": "new",
+ "version": "Mainline",
+ "changelog": "Updated build to Project+ v3.1.5 \nThis updates the Dolphin build to mainline Dolphin, implementing 7+ years worth of upgrades! \nPlease take note of your settings before updating!",
+ "update-page": "https://chadbuild.motobug.net/",
+ "download-page-windows": "https://github.com/Project-Plus-Development-Team/Project-Plus-Dolphin/releases/download/v3.1.2-mainline-beta.5/Project+.v3.1.2.Mainline.Dolphin.BETA.5.Windows.zip",
+ "download-page-mac": "https://github.com/jlambert360/PPlusReleases/releases/download/2.25/PPlusv2.29Mac.zip"}
