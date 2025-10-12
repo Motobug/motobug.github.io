@@ -1,6 +1,6 @@
 {"hash": "new",
  "version": "Mainline",
- "changelog": "Updated build to Project+ v3.1.5 \nThis updates the Dolphin build to mainline Dolphin, implementing 7+ years worth of upgrades! \nA fresh install is highly recommended instead of updating through this, but can be done. \n Please take note of your settings if you decide to update directly! \nWARNING: Your aspect ratio setting will be changed to the wrong setting after the update; go to Graphics > General and set it to P+ widescreen to fix it. ",
+ "changelog": "Updated build to Project+ v3.1.5 \nThis updates the Dolphin build to mainline Dolphin, implementing 7+ years worth of upgrades! \nA fresh install is highly recommended instead of updating through this, but can be done. \nPlease take note of your settings if you decide to update directly! \n\nWARNING: Your aspect ratio setting will be changed to the wrong setting after the update; go to Graphics > General and set it to P+ widescreen to fix it. ",
  "update-page": "https://chadbuild.motobug.net/",
  "download-page-windows": "https://github.com/Project-Plus-Development-Team/Project-Plus-Dolphin/releases/download/v3.1.2-mainline-beta.5/Project+.v3.1.2.Mainline.Dolphin.BETA.5.Windows.zip",
  "download-page-mac": "https://github.com/jlambert360/PPlusReleases/releases/download/2.25/PPlusv2.29Mac.zip"}
