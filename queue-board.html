@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geek Squad — Appointment Board</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c10;
+    --surface: #11141b;
+    --border: #1e2330;
+    --accent: #ffe000;
+    --accent-dim: rgba(255,224,0,0.12);
+    --text-primary: #f0f2f5;
+    --text-secondary: #7a8399;
+    --text-muted: #3d4459;
+    --tag-dropoff: #1a2a3a;
+    --tag-dropoff-text: #5ab4f5;
+    --tag-pickup: #1a2d1a;
+    --tag-pickup-text: #5ddb7e;
+    --tag-consult: #2a1f0a;
+    --tag-consult-text: #f5b942;
+    --row-hover: #161a24;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+  header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 48px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .logo-block { display: flex; align-items: center; gap: 16px; }
+  .logo-badge {
+    width: 52px; height: 52px;
+    background: var(--accent);
+    border-radius: 4px;
+    display: grid; place-items: center; flex-shrink: 0;
+  }
+  .logo-badge svg { width: 30px; height: 30px; }
+  .logo-text h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.4rem; letter-spacing: 0.04em; line-height: 1;
+    color: var(--text-primary);
+  }
+  .logo-text p {
+    font-size: 0.78rem; color: var(--text-secondary);
+    letter-spacing: 0.12em; text-transform: uppercase;
+    margin-top: 4px; font-family: 'DM Mono', monospace;
+  }
+  .header-meta { text-align: right; }
+  .live-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-dim);
+    border: 1px solid rgba(255,224,0,0.2);
+    border-radius: 20px; padding: 5px 12px;
+    font-family: 'DM Mono', monospace; font-size: 0.72rem;
+    color: var(--accent); letter-spacing: 0.08em;
+    text-transform: uppercase; margin-bottom: 6px;
+  }
+  .live-dot {
+    width: 7px; height: 7px;
+    background: var(--accent); border-radius: 50%;
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+  .clock {
+    font-family: 'DM Mono', monospace; font-size: 1.5rem;
+    color: var(--text-primary); letter-spacing: 0.06em;
+  }
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent) 0%, transparent 60%);
+    margin-bottom: 32px; opacity: 0.6;
+  }
+  .table-wrap {
+    border: 1px solid var(--border); border-radius: 8px;
+    overflow: hidden; background: var(--surface);
+  }
+  .table-header {
+    display: grid;
+    grid-template-columns: 56px 1fr 1.6fr 160px;
+    padding: 12px 24px;
+    background: var(--bg); border-bottom: 1px solid var(--border);
+  }
+  .col-label {
+    font-family: 'DM Mono', monospace; font-size: 0.68rem;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted);
+  }
+  .appointment-row {
+    display: grid;
+    grid-template-columns: 56px 1fr 1.6fr 160px;
+    align-items: center; padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+    animation: slideIn 0.4s ease both;
+  }
+  .appointment-row:last-child { border-bottom: none; }
+  .appointment-row:hover { background: var(--row-hover); }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .appointment-row:nth-child(1) { animation-delay: 0.05s; }
+  .appointment-row:nth-child(2) { animation-delay: 0.10s; }
+  .appointment-row:nth-child(3) { animation-delay: 0.15s; }
+  .appointment-row:nth-child(4) { animation-delay: 0.20s; }
+  .appointment-row:nth-child(5) { animation-delay: 0.25s; }
+  .appointment-row:nth-child(6) { animation-delay: 0.30s; }
+  .appointment-row:nth-child(7) { animation-delay: 0.35s; }
+  .appointment-row:nth-child(8) { animation-delay: 0.40s; }
+  .appointment-row:nth-child(9) { animation-delay: 0.45s; }
+  .appointment-row:nth-child(10) { animation-delay: 0.50s; }
+  .row-num {
+    font-family: 'DM Mono', monospace; font-size: 0.78rem;
+    color: var(--text-muted); font-weight: 500;
+  }
+  .client-name {
+    font-size: 1rem; font-weight: 500;
+    color: var(--text-primary); letter-spacing: 0.01em;
+  }
+  .client-initial {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px;
+    background: var(--accent-dim); border: 1px solid rgba(255,224,0,0.18);
+    border-radius: 50%; font-family: 'DM Mono', monospace;
+    font-size: 0.7rem; color: var(--accent);
+    margin-right: 10px; flex-shrink: 0;
+  }
+  .client-cell { display: flex; align-items: center; }
+  .activity-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 11px; border-radius: 4px;
+    font-size: 0.78rem; font-weight: 500;
+    letter-spacing: 0.02em; white-space: nowrap;
+  }
+  .activity-tag.dropoff { background: var(--tag-dropoff); color: var(--tag-dropoff-text); }
+  .activity-tag.pickup  { background: var(--tag-pickup);  color: var(--tag-pickup-text);  }
+  .activity-tag.consult { background: var(--tag-consult); color: var(--tag-consult-text); }
+  .tag-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: currentColor; opacity: 0.7;
+  }
+  .time-cell {
+    font-family: 'DM Mono', monospace; font-size: 0.9rem;
+    color: var(--text-secondary); letter-spacing: 0.04em;
+  }
+  .footer {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 24px; padding: 0 4px; flex-wrap: wrap; gap: 12px;
+  }
+  .footer-count {
+    font-family: 'DM Mono', monospace; font-size: 0.75rem;
+    color: var(--text-muted); letter-spacing: 0.06em;
+  }
+  .footer-count span { color: var(--accent); font-weight: 500; }
+  .refresh-btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text-secondary); font-family: 'DM Mono', monospace;
+    font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 8px 14px; border-radius: 4px; cursor: pointer; transition: all 0.2s;
+  }
+  .refresh-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+  .refresh-btn svg { transition: transform 0.5s; }
+  .refresh-btn:hover svg { transform: rotate(180deg); }
+  .state-msg {
+    text-align: center; padding: 64px 24px;
+    font-family: 'DM Mono', monospace; color: var(--text-muted);
+    font-size: 0.85rem; letter-spacing: 0.06em;
+  }
+  .spinner {
+    width: 24px; height: 24px;
+    border: 2px solid var(--border); border-top-color: var(--accent);
+    border-radius: 50%; animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 620px) {
+    .table-header, .appointment-row { grid-template-columns: 40px 1fr 160px; }
+    .activity-col { display: none; }
+    .table-header .col-label:nth-child(3) { display: none; }
+    .logo-text h1 { font-size: 1.8rem; }
+    .clock { font-size: 1.1rem; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <div class="logo-block">
+      <div class="logo-badge">
+        <svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="15" cy="11" r="5.5" fill="#0a0c10"/>
+          <path d="M5 26c0-5.523 4.477-10 10-10s10 4.477 10 10" stroke="#0a0c10" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="15" cy="11" r="3" fill="#0a0c10"/>
+          <circle cx="15" cy="11" r="1.5" fill="#ffe000"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <h1>Geek Squad</h1>
+        <p>Appointment Queue &mdash; Store #820</p>
+      </div>
+    </div>
+    <div class="header-meta">
+      <div class="live-pill" id="live-pill"><span class="live-dot" id="live-dot"></span><span id="live-label">Live</span></div>
+      <div class="clock" id="clock">--:-- --</div>
+    </div>
+  </header>
+  <div class="divider"></div>
+  <div class="table-wrap" id="table-wrap">
+    <div class="state-msg"><div class="spinner"></div>Loading appointments&hellip;</div>
+  </div>
+  <div class="footer">
+    <div class="footer-count" id="footer-count"></div>
+    <button class="refresh-btn" onclick="loadData()">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M11 6.5A4.5 4.5 0 1 1 6.5 2a4.5 4.5 0 0 1 3.182 1.318L11 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        <path d="M9 5h2.5V2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Refresh
+    </button>
+  </div>
+</div>
+
+<script>
+  // Static snapshot fetched 2026-03-27 — shown if live fetch fails
+  const STATIC_DATA = [
+    {"entities":{"client":{"firstName":"MICHELE","lastName":"R"},"activity":{"externalId":"pr-dropoffct","label":"Drop Off - Computer or Tablet"}},"scheduledTime":"2026-03-27T10:20:00-05:00"},
+    {"entities":{"client":{"firstName":"KATHLEEN","lastName":"W"},"activity":{"externalId":"pr-dropoffct","label":"Drop Off - Computer or Tablet"}},"scheduledTime":"2026-03-27T10:40:00-05:00"},
+    {"entities":{"client":{"firstName":"JACOB","lastName":"R"},"activity":{"externalId":"pr-dropoffct","label":"Drop Off - Computer or Tablet"}},"scheduledTime":"2026-03-27T11:40:00-05:00"},
+    {"entities":{"client":{"firstName":"ELIZABETH","lastName":"T"},"activity":{"externalId":"pr-pickup","label":"Pick Up"}},"scheduledTime":"2026-03-27T12:20:00-05:00"},
+    {"entities":{"client":{"firstName":"MICHELE","lastName":"R"},"activity":{"externalId":"pr-consult","label":"Consultation"}},"scheduledTime":"2026-03-27T12:40:00-05:00"},
+    {"entities":{"client":{"firstName":"BEVERLY","lastName":"K"},"activity":{"externalId":"pr-consult","label":"Consultation"}},"scheduledTime":"2026-03-27T14:40:00-05:00"},
+    {"entities":{"client":{"firstName":"PAUL","lastName":"J"},"activity":{"externalId":"pr-dropoffct","label":"Drop Off - Computer or Tablet"}},"scheduledTime":"2026-03-27T17:20:00-05:00"},
+    {"entities":{"client":{"firstName":"RUNE","lastName":"M"},"activity":{"externalId":"pr-consult","label":"Consultation"}},"scheduledTime":"2026-03-27T18:40:00-05:00"}
+  ];
+
+  const API_URL = 'https://servicescheduling.bestbuy.com/api/api/QueueBoard/pr?locationId=820';
+  const PROXIES = [
+    u => 'https://corsproxy.io/?url=' + encodeURIComponent(u),
+    u => 'https://api.allorigins.win/get?url=' + encodeURIComponent(u),
+    u => 'https://thingproxy.freeboard.io/fetch/' + u,
+  ];
+
+  async function tryFetch() {
+    for (const makeUrl of PROXIES) {
+      try {
+        const res = await fetch(makeUrl(API_URL), { signal: AbortSignal.timeout(6000) });
+        if (!res.ok) continue;
+        const text = await res.text();
+        const json = JSON.parse(text);
+        if (Array.isArray(json)) return { data: json, live: true };
+        if (json.contents) return { data: JSON.parse(json.contents), live: true };
+      } catch(e) { /* try next proxy */ }
+    }
+    return { data: STATIC_DATA, live: false };
+  }
+
+  // Clock
+  function updateClock() {
+    const now = new Date();
+    const h = now.getHours(), m = String(now.getMinutes()).padStart(2,'0');
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    document.getElementById('clock').textContent = ((h % 12) || 12) + ':' + m + ' ' + ampm;
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  function tagClass(id) {
+    if (!id) return 'consult';
+    if (id.includes('dropoff')) return 'dropoff';
+    if (id.includes('pickup')) return 'pickup';
+    return 'consult';
+  }
+
+  function formatTime(iso) {
+    const d = new Date(iso);
+    const h = d.getHours(), m = String(d.getMinutes()).padStart(2,'0');
+    return ((h % 12) || 12) + ':' + m + ' ' + (h >= 12 ? 'PM' : 'AM');
+  }
+
+  function titleCase(s) { return s.charAt(0) + s.slice(1).toLowerCase(); }
+
+  function renderTable(data, live) {
+    // Update live pill
+    const pill = document.getElementById('live-pill');
+    const dot = document.getElementById('live-dot');
+    const lbl = document.getElementById('live-label');
+    if (!live) {
+      pill.style.borderColor = 'rgba(255,150,0,0.3)';
+      pill.style.color = '#f5a623';
+      pill.style.background = 'rgba(245,166,35,0.1)';
+      dot.style.background = '#f5a623';
+      lbl.textContent = 'Cached';
+    } else {
+      pill.style.borderColor = '';
+      pill.style.color = '';
+      pill.style.background = '';
+      dot.style.background = '';
+      lbl.textContent = 'Live';
+    }
+
+    let html = '<div class="table-header">'
+      + '<div class="col-label">#</div>'
+      + '<div class="col-label">Client</div>'
+      + '<div class="col-label activity-col">Activity</div>'
+      + '<div class="col-label">Time</div>'
+      + '</div>';
+
+    data.forEach(function(appt, i) {
+      const client = appt.entities && appt.entities.client;
+      const activity = appt.entities && appt.entities.activity;
+      const first = client && client.firstName ? titleCase(client.firstName) : '?';
+      const last = client && client.lastName ? client.lastName.charAt(0) + '.' : '';
+      const label = activity && activity.label ? activity.label : 'Service';
+      const cls = tagClass(activity && activity.externalId);
+      const time = formatTime(appt.scheduledTime);
+
+      html += '<div class="appointment-row">'
+        + '<div class="row-num">' + i + '</div>'
+        + '<div class="client-cell">'
+        + '<span class="client-initial">' + first.charAt(0) + '</span>'
+        + '<span class="client-name">' + first + ' ' + last + '</span>'
+        + '</div>'
+        + '<div class="activity-col">'
+        + '<span class="activity-tag ' + cls + '"><span class="tag-dot"></span>' + label + '</span>'
+        + '</div>'
+        + '<div class="time-cell">' + time + '</div>'
+        + '</div>';
+    });
+
+    document.getElementById('table-wrap').innerHTML = html;
+    document.getElementById('footer-count').innerHTML =
+      'Showing <span>' + data.length + '</span> appointment' + (data.length !== 1 ? 's' : '') + ' today'
+      + (live ? '' : ' &nbsp;<span style="color:var(--text-muted);font-size:0.7em">(cached snapshot — 2026-03-27)</span>');
+  }
+
+  async function loadData() {
+    document.getElementById('table-wrap').innerHTML = '<div class="state-msg"><div class="spinner"></div>Loading appointments&hellip;</div>';
+    document.getElementById('footer-count').textContent = '';
+    const result = await tryFetch();
+    if (!result.data.length) {
+      document.getElementById('table-wrap').innerHTML = '<div class="state-msg">No appointments found.</div>';
+      return;
+    }
+    renderTable(result.data, result.live);
+  }
+
+  loadData();
+  setInterval(loadData, 60000);
+</script>
+</body>
+</html>
