@@ -221,86 +221,71 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 @media (max-width: 620px) {
-
   .page {
     padding: 20px 12px 60px;
   }
-
   header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
   }
-
+  .logo-block {
+    flex: 1;
+  }
   .header-meta {
     margin-top: 0;
-    text-align: left;
+    text-align: right;
   }
-
   .logo-text h1 {
     font-size: 1.5rem;
   }
-
   .clock {
     font-size: 1rem;
   }
-
-  /* TABLE → CARD LAYOUT */
   .table-header {
     display: none;
   }
-
   .appointment-row {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
-
     padding: 14px 16px;
   }
-
   .client-cell {
     width: 100%;
   }
-
   .client-name {
     font-size: 1rem;
   }
-
   .activity-col {
     display: block;
     width: 100%;
   }
-
   .activity-tag {
     font-size: 0.85rem;
     padding: 6px 10px;
   }
-
   .time-cell {
     font-size: 0.85rem;
     color: var(--text-secondary);
   }
-
   /* make time align right like a badge */
   .time-cell::before {
     content: "Time: ";
     color: var(--text-muted);
   }
-
-  /* subtle card separation */
   .appointment-row {
     border-bottom: none;
     border-radius: 6px;
     margin-bottom: 10px;
     background: #0f131a;
   }
-
   .table-wrap {
     border: none;
     background: transparent;
   }
-
   .footer {
     flex-direction: column;
     align-items: flex-start;
