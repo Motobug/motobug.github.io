@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geek Squad Appointment Board</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://db.onlinewebfonts.com/c/49f1eb33c8d53f47565feb1d6d6b9918?family=Gnomon*+Foreground" rel="stylesheet" type="text/css"/>
+<link href="https://db.onlinewebfonts.com/c/1a9e6d35945c3281c3f3dde2fa40ce32?family=Human+BBY+Web" rel="stylesheet" type="text/css"/>
+<style>
+  :root {
+    --bg: #0a0c10;
+    --surface: #11141b;
+    --border: #1e2330;
+    --accent: #ff9100;
+    --accent-dim: rgba(255,224,0,0.12);
+    --live: #56cd4c;
+    --live-dim: #57cd4c40;
+    --text-primary: #f0f2f5;
+    --text-secondary: #7a8399;
+    --text-muted: #575c6a;
+    --tag-dropoff: #1a2a3a;
+    --tag-dropoff-text: #5ab4f5;
+    --tag-pickup: #1a2d1a;
+    --tag-pickup-text: #5ddb7e;
+    --tag-consult: #2a1f0a;
+    --tag-consult-text: #f5b942;
+    --row-hover: #161a24;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: 'Geist Mono', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+  header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 48px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .logo-block { display: flex; align-items: center; gap: 16px; }
+  .logo-badge {
+    width: 102px; height: 82px;
+    background: rgba(0, 0, 0, 0.0);
+    border-radius: 4px;
+    display: grid; place-items: center; flex-shrink: 0;
+  }
+  .logo-badge svg { 
+    width: 100px; height: 100px; 
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .logo-text h1 {
+    font-family: 'Gnomon* Foreground', sans-serif;
+    font-size: 2.0rem; letter-spacing: -0.04em; line-height: 1;
+    color: var(--text-primary);
+    margin-top: 20px;
+    text-transform: uppercase;
+  }
+  .logo-text p {
+    font-size: 0.9rem; color: var(--text-secondary);
+    letter-spacing: 0.12em; text-transform: uppercase;
+    margin-top: -5px; font-family: 'Geist Mono', monospace;
+  }
+  .header-meta { text-align: right; margin-top: -50px; }
+  .live-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--live-dim);
+    border: 1px solid rgba(0, 255, 51, 0.2);
+    border-radius: 20px; padding: 5px 12px;
+    font-family: 'Geist Mono', monospace; font-size: 0.72rem;
+    color: var(--live); letter-spacing: 0.08em;
+    text-transform: uppercase; margin-bottom: 0px;
+  }
+  .live-dot {
+    width: 7px; height: 7px;
+    background: var(--live); border-radius: 50%;
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+  .clock {
+    font-family: 'Geist Mono', monospace; font-size: 1.5rem;
+    color: var(--text-primary); letter-spacing: 0em;
+  }
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent) 0%, transparent 60%);
+    margin-top: -20px; margin-bottom: 20px; opacity: 0.6;
+  }
+  .table-wrap {
+    border: 1px solid var(--border); border-radius: 8px;
+    overflow: hidden; background: var(--surface);
+  }
+  .table-header {
+    display: grid;
+    grid-template-columns: 200px 200px 160px;
+    padding: 12px 24px;
+    background: var(--bg); border-bottom: 1px solid var(--border);
+  }
+  .col-label {
+    font-family: 'Geist Mono', monospace; font-size: 0.68rem;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted);
+  }
+  .appointment-row {
+    display: grid;
+    grid-template-columns: 200px 200px 160px;
+    align-items: center; padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+    animation: slideIn 0.4s ease both;
+  }
+  .appointment-row:last-child { border-bottom: none; }
+  .appointment-row:hover { background: var(--row-hover); }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .appointment-row:nth-child(1) { animation-delay: 0.05s; }
+  .appointment-row:nth-child(2) { animation-delay: 0.10s; }
+  .appointment-row:nth-child(3) { animation-delay: 0.15s; }
+  .appointment-row:nth-child(4) { animation-delay: 0.20s; }
+  .appointment-row:nth-child(5) { animation-delay: 0.25s; }
+  .appointment-row:nth-child(6) { animation-delay: 0.30s; }
+  .appointment-row:nth-child(7) { animation-delay: 0.35s; }
+  .appointment-row:nth-child(8) { animation-delay: 0.40s; }
+  .appointment-row:nth-child(9) { animation-delay: 0.45s; }
+  .appointment-row:nth-child(10) { animation-delay: 0.50s; }
+  .appointment-row:nth-child(11) { animation-delay: 0.55s; }
+  .appointment-row:nth-child(12) { animation-delay: 0.60s; }
+  .appointment-row:nth-child(13) { animation-delay: 0.65s; }
+  .appointment-row:nth-child(14) { animation-delay: 0.70s; }
+  .row-num {
+    font-family: 'Geist Mono', monospace; font-size: 0.78rem;
+    color: var(--text-muted); font-weight: 500;
+  }
+  .client-name {
+    font-size: 1rem; font-weight: 500;
+    color: var(--text-primary); letter-spacing: 0.01em;
+  }
+  .client-initial {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px;
+    background: var(--accent-dim); border: 1px solid rgba(255, 128, 0, 0.18);
+    border-radius: 50%; font-family: 'Geist Mono', monospace;
+    font-size: 0.7rem; color: var(--accent);
+    margin-right: 10px; flex-shrink: 0;
+  }
+  .client-cell { display: flex; align-items: center; }
+  .activity-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 11px; border-radius: 4px;
+    font-size: 0.95rem; font-weight: 500;
+    letter-spacing: 0.02em; white-space: nowrap;
+  }
+  .activity-tag.dropoff { background: var(--tag-dropoff); color: var(--tag-dropoff-text); }
+  .activity-tag.pickup  { background: var(--tag-pickup);  color: var(--tag-pickup-text);  }
+  .activity-tag.consult { background: var(--tag-consult); color: var(--tag-consult-text); }
+  .tag-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: currentColor; opacity: 0.7;
+  }
+  .time-cell {
+    font-family: 'Geist Mono', monospace; font-size: 0.9rem;
+    color: var(--text-secondary); letter-spacing: 0.04em;
+  }
+  .footer {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 24px; padding: 0 4px; flex-wrap: wrap; gap: 12px;
+  }
+  .footer-count {
+    font-family: 'Geist Mono', monospace; font-size: 0.75rem;
+    color: var(--text-muted); letter-spacing: 0.06em;
+  }
+  .footer-count span { color: var(--accent); font-weight: 500; }
+  .refresh-btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text-secondary); font-family: 'Geist Mono', monospace;
+    font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 8px 14px; border-radius: 4px; cursor: pointer; transition: all 0.2s;
+  }
+  .refresh-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+  .refresh-btn svg { transition: transform 0.5s; }
+  .refresh-btn:hover svg { transform: rotate(180deg); }
+  .state-msg {
+    text-align: center; padding: 64px 24px;
+    font-family: 'Geist Mono', monospace; color: var(--text-muted);
+    font-size: 0.85rem; letter-spacing: 0.06em;
+  }
+  .spinner {
+    width: 24px; height: 24px;
+    border: 2px solid var(--border); border-top-color: var(--accent);
+    border-radius: 50%; animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 620px) {
+    .table-header, .appointment-row { grid-template-columns: 40px 1fr 160px; }
+    .activity-col { display: none; }
+    .table-header .col-label:nth-child(3) { display: none; }
+    .logo-text h1 { font-size: 1.8rem; }
+    .clock { font-size: 1.1rem; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <div class="logo-block">
+      <div class="logo-badge">
+        <svg version="1.1" baseProfile="tiny" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 105.2 65.7" xml:space="preserve">
+          <path fill="#010101" d="M104.1,32.9c0,17.4-23,31.5-51.4,31.5c-28.4,0-51.4-14.1-51.4-31.5c0-17.4,23-31.5,51.4-31.5  C81.1,1.4,104.1,15.5,104.1,32.9"/>
+          <path fill="#A7A8A9" d="M52.7,65.2c-13.9,0-27-3.3-36.8-9.3c-10-6.1-15.5-14.3-15.5-23c0-8.7,5.5-16.9,15.5-23  c9.8-6,22.9-9.3,36.8-9.3c13.9,0,27,3.3,36.8,9.3c10,6.1,15.5,14.3,15.5,23c0,8.7-5.5,16.9-15.5,23C79.6,61.9,66.5,65.2,52.7,65.2   M52.7,2.2C24.8,2.2,2,16,2,32.9c0,16.9,22.7,30.7,50.6,30.7c27.9,0,50.6-13.8,50.6-30.7C103.3,16,80.6,2.2,52.7,2.2"/>
+          <path fill="#FFFFFF" d="M25.4,15.5c-7,0-12.1,4.8-12.1,11.4c0,6.5,5.1,11.4,12,11.4c2.2,0,5.5-0.6,8.7-3.4l0,0v-8  c0-0.1-0.3-1.6-1.7-1.6h-7.8v4.1h4.5v3.5l-0.1,0c-1.1,0.5-2.6,0.6-3.6,0.6c-3.8,0-6.5-2.8-6.5-6.6c0-1.8,0.6-3.4,1.6-4.6  c1.2-1.4,3-2.1,5.2-2.1c1.6,0,3.4,0.6,4.8,1.7l0,0l2.8-3.7l0,0C30.7,16.3,28.4,15.5,25.4,15.5"/>
+          <path fill="#FFFFFF" d="M89.6,38.3c1.7,0,3.2-0.5,4.4-1.6l0,0L94,36.5c-0.5-1-1.1-2.1-1.6-3.2l0,0l0,0c-0.5,0.3-1.3,0.5-1.6,0.5  c-0.8,0-1.5-0.2-2.3-1.4l-1.9-3.3l0-0.1c0.8-1,1.6-2,2.3-3l0.3-0.4c0.8-1,1.7-2.2,2.6-3.4l0,0v-0.6h-5.7l-0.3,0.5  c-1.2,1.9-2.7,4.1-4.1,6.1l-0.2,0.3V17.6c0-0.1,0-1.7-1.7-1.7h-3.5v22h5.2v-7.7l2.1,3.8C85.3,37.2,86.9,38.3,89.6,38.3"/>
+          <path fill="#FFFFFF" d="M69.1,33.1c-0.9,0.7-2.3,1-3.5,1c-2,0-4.3-1-4.6-3.2l0-0.2h12.7l0.4-0.4c0-0.3,0-0.7,0-1  c0-5.4-3.8-9.2-8.9-9.2c-5.3,0-9.1,3.8-9.1,9.1c0,5.3,3.8,9.2,9.1,9.2c3,0,5.4-1,7.1-2.6l0,0L69.1,33.1L69.1,33.1z M61.1,27.6  c0.5-2.3,2.5-3.3,4.3-3.3c2.5,0,3.9,1.7,4.1,3.3l0,0.2H61L61.1,27.6z"/>
+          <path fill="#FFFFFF" d="M49.3,33.1c-0.9,0.7-2.3,1-3.5,1c-2,0-4.3-1-4.6-3.2l0-0.2h12.7l0.4-0.4c0-0.3,0-0.7,0-1  c0-5.4-3.8-9.2-8.9-9.2c-5.3,0-9.1,3.8-9.1,9.1c0,5.3,3.8,9.2,9.1,9.2c3,0,5.4-1,7.1-2.6l0,0L49.3,33.1L49.3,33.1z M41.2,27.6  c0.5-2.3,2.5-3.3,4.3-3.3c2.5,0,3.9,1.7,4.1,3.3l0,0.2h-8.4L41.2,27.6z"/>
+          <path fill="#F58025" d="M34.2,47.8c-0.2-0.3-0.4-0.5-0.7-0.7c-0.3-0.2-0.7-0.3-1.1-0.4c-0.4-0.1-0.9-0.2-1.4-0.3  c-0.3,0-0.6-0.1-0.9-0.1c-0.3-0.1-0.5-0.1-0.6-0.2c-0.2-0.1-0.3-0.2-0.4-0.3C29,45.7,29,45.5,29,45.4c0-0.2,0-0.3,0.1-0.4  c0-0.1,0.1-0.2,0.2-0.3c0.1-0.1,0.3-0.1,0.5-0.2c0.2,0,0.5-0.1,0.8-0.1c0.2,0,0.5,0,0.7,0.1c0.2,0,0.5,0.1,0.7,0.1  c0.2,0.1,0.4,0.1,0.6,0.2c0.1,0,0.1,0.1,0.2,0.1l0,0c0,0,0.3,0.2,0.5-0.1l0.8-1.2l0,0l0,0c-0.3-0.2-0.8-0.4-1.3-0.6  c-0.6-0.2-1.3-0.3-2.2-0.3c-0.6,0-1.1,0-1.6,0.1c-0.5,0.1-0.8,0.2-1.1,0.5c-0.3,0.2-0.5,0.5-0.7,0.8c-0.1,0.3-0.2,0.7-0.2,1.2  c0,0.5,0.1,0.9,0.2,1.2c0.1,0.3,0.4,0.6,0.7,0.8c0.3,0.2,0.7,0.3,1.1,0.4c0.4,0.1,0.9,0.2,1.5,0.3c0.3,0,0.6,0.1,0.9,0.1  c0.3,0,0.5,0.1,0.6,0.2c0.2,0.1,0.3,0.2,0.4,0.3c0.1,0.1,0.1,0.2,0.1,0.4c0,0.2,0,0.3-0.1,0.5c-0.1,0.1-0.1,0.2-0.3,0.3  c-0.1,0.1-0.3,0.1-0.6,0.2c-0.3,0-0.6,0.1-1,0.1c-0.5,0-1.1-0.1-1.6-0.2c-0.4-0.1-0.7-0.3-1.1-0.5l0,0c0,0-0.4-0.3-0.6,0.1l-0.7,1.1  l0,0l0,0c0.5,0.4,1.1,0.6,1.8,0.8c0.7,0.2,1.5,0.3,2.3,0.3c0.7,0,1.3-0.1,1.8-0.2c0.5-0.1,0.9-0.3,1.2-0.5c0.3-0.2,0.5-0.5,0.6-0.9  c0.1-0.3,0.2-0.7,0.2-1.2C34.5,48.5,34.4,48.1,34.2,47.8"/>
+          <path fill="#F58025" d="M55.5,42.9c-0.4,0-0.4,0.3-0.4,0.3V48c0,0.3,0,0.6-0.1,0.9c-0.1,0.2-0.2,0.4-0.3,0.6  c-0.1,0.2-0.4,0.3-0.6,0.4c-0.3,0.1-0.6,0.1-1,0.1c-0.4,0-0.8,0-1-0.1c-0.3-0.1-0.5-0.2-0.6-0.4c-0.1-0.2-0.2-0.4-0.3-0.6  c0-0.2-0.1-0.5-0.1-0.8v-4.8c0,0,0-0.3-0.4-0.3h-1.6v5.4c0,0.4,0,0.8,0.1,1.2c0.1,0.4,0.2,0.8,0.5,1.1c0.3,0.3,0.7,0.6,1.2,0.8  c0.5,0.2,1.3,0.3,2.2,0.3c0.9,0,1.6-0.1,2.2-0.3c0.5-0.2,0.9-0.5,1.2-0.8c0.3-0.3,0.4-0.7,0.5-1.1c0.1-0.4,0.1-0.8,0.1-1.2v-5.4  H55.5z"/>
+          <path fill="#F58025" d="M61.8,51.2l0.4-1h3.9l0.4,1.1c0,0.1,0.1,0.3,0.4,0.3h1.7l-3.5-8.7l0,0h-2l-3.5,8.7l0,0h1.6  C61.4,51.6,61.7,51.6,61.8,51.2 M64.2,45.2l1.3,3.3h-2.6L64.2,45.2z"/>
+          <path fill="#F58025" d="M78.9,45.1c-0.2-0.6-0.5-1-0.9-1.3c-0.4-0.3-0.9-0.6-1.5-0.7c-0.6-0.1-1.3-0.2-2.2-0.2h-2.6  c-0.5,0-0.5,0.3-0.5,0.3v8.4h3.1c0.8,0,1.6-0.1,2.2-0.2c0.6-0.1,1.1-0.4,1.5-0.7c0.4-0.3,0.7-0.8,0.9-1.3c0.2-0.6,0.3-1.3,0.3-2.1  C79.2,46.4,79.1,45.7,78.9,45.1 M77.1,48.5c-0.1,0.3-0.2,0.6-0.4,0.8c-0.2,0.2-0.5,0.4-0.8,0.4c-0.4,0.1-0.8,0.1-1.4,0.1h-1.2v-5.2  h1.2c0.6,0,1.1,0,1.5,0.1s0.7,0.2,0.9,0.4c0.2,0.2,0.3,0.5,0.4,0.8c0.1,0.3,0.1,0.7,0.1,1.2C77.2,47.7,77.1,48.2,77.1,48.5"/>
+          <path fill="#F58025" d="M46.5,52.5l-1.4-2c0.3-0.3,0.6-0.7,0.7-1.2c0.2-0.6,0.3-1.3,0.3-2.1c0-0.8-0.1-1.5-0.3-2.1  c-0.2-0.6-0.5-1-0.9-1.4c-0.4-0.4-0.9-0.6-1.4-0.8c-0.6-0.2-1.2-0.2-1.9-0.2c-0.7,0-1.3,0.1-1.9,0.2c-0.6,0.2-1,0.4-1.4,0.8  c-0.4,0.4-0.7,0.8-0.9,1.4c-0.2,0.6-0.3,1.3-0.3,2.1c0,0.8,0.1,1.5,0.3,2.1c0.2,0.6,0.5,1,0.9,1.4c0.4,0.4,0.9,0.6,1.4,0.8  c0.6,0.2,1.2,0.2,1.9,0.2c0.7,0,1.3-0.1,1.9-0.2c0,0,0,0,0,0l1.3,1.8l0,0c0.1,0.1,0.3,0.3,0.6,0.1L46.5,52.5z M41.6,50  c-0.5,0-0.9-0.1-1.2-0.2c-0.3-0.1-0.6-0.3-0.8-0.5c-0.2-0.2-0.3-0.5-0.4-0.9C39,48.1,39,47.7,39,47.3c0-0.4,0-0.8,0.1-1.1  s0.2-0.6,0.4-0.8c0.2-0.2,0.5-0.4,0.8-0.5c0.3-0.1,0.7-0.2,1.2-0.2c0.5,0,0.9,0.1,1.2,0.2c0.3,0.1,0.6,0.3,0.8,0.5  c0.2,0.2,0.3,0.5,0.4,0.8s0.1,0.7,0.1,1.1c0,0.4,0,0.8-0.1,1.1c-0.1,0.3-0.2,0.6-0.4,0.9c-0.2,0.2-0.5,0.4-0.8,0.5  C42.5,49.9,42,50,41.6,50"/>
+          <path fill="#F58025" d="M83.8,44.8h-0.3v-1.6h0l-0.6,1.6h-0.2l-0.6-1.6h0v1.6h-0.3V43h0.4l0.6,1.4l0.6-1.4h0.4V44.8z M81.4,43.2  h-0.6v1.6h-0.3v-1.6h-0.6V43h1.5V43.2z"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <h1>Appointments</h1>
+        <p>Store #820</p>
+      </div>
+    </div>
+    <div class="header-meta">
+      <div class="clock" id="clock">--:-- --</div>
+    </div>
+  </header>
+  <div class="divider"></div>
+  <div class="table-wrap" id="table-wrap">
+    <div class="state-msg"><div class="spinner"></div>Loading appointments&hellip;</div>
+  </div>
+  <div class="footer">
+    <div class="footer-count" id="footer-count"></div>
+    <div class="live-pill" id="live-pill"><span class="live-dot" id="live-dot"></span><span id="live-label">Live</span></div>
+    <button class="refresh-btn" onclick="loadData()">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M11 6.5A4.5 4.5 0 1 1 6.5 2a4.5 4.5 0 0 1 3.182 1.318L11 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        <path d="M9 5h2.5V2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Refresh
+    </button>
+  </div>
+</div>
+
+<script>
+  const API_URL = 'https://servicescheduling.bestbuy.com/api/api/QueueBoard/pr?locationId=820';
+  const PROXIES = [
+    u => 'https://corsproxy.io/?url=' + encodeURIComponent(u),
+    u => 'https://api.allorigins.win/get?url=' + encodeURIComponent(u),
+    u => 'https://thingproxy.freeboard.io/fetch/' + u,
+  ];
+
+  async function tryFetch() {
+    for (const makeUrl of PROXIES) {
+      try {
+        const res = await fetch(makeUrl(API_URL), { signal: AbortSignal.timeout(1000) });
+        if (!res.ok) continue;
+        const text = await res.text();
+        const json = JSON.parse(text);
+        if (Array.isArray(json)) return { data: json, live: true };
+        if (json.contents) return { data: JSON.parse(json.contents), live: true };
+      } catch(e) { /* try next proxy */ }
+    }
+    return  
+      document.getElementById('table-wrap').innerHTML = '<div class="state-msg">Failed to load appointments. Maybe corporate got us?</div>';
+  }
+
+  // Clock
+  function updateClock() {
+    const now = new Date();
+    const h = now.getHours(), m = String(now.getMinutes()).padStart(2,'0');
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    document.getElementById('clock').textContent = ((h % 12) || 12) + ':' + m + ' ' + ampm;
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  function tagClass(id) {
+    if (!id) return 'consult';
+    if (id.includes('dropoff')) return 'dropoff';
+    if (id.includes('pickup')) return 'pickup';
+    return 'consult';
+  }
+
+  function formatTime(iso) {
+    const d = new Date(iso);
+    const h = d.getHours(), m = String(d.getMinutes()).padStart(2,'0');
+    return ((h % 12) || 12) + ':' + m + ' ' + (h >= 12 ? 'PM' : 'AM');
+  }
+
+  function titleCase(s) { return s.charAt(0) + s.slice(1).toLowerCase(); }
+
+  
+  function renderTable(data, live) {
+    // Update live pill
+    const pill = document.getElementById('live-pill');
+    const dot = document.getElementById('live-dot');
+    const lbl = document.getElementById('live-label');
+    if (!live) {
+      pill.style.borderColor = 'rgba(255,150,0,0.3)';
+      pill.style.color = '#f5a623';
+      pill.style.background = 'rgba(245,166,35,0.1)';
+      dot.style.background = '#f5a623';
+      lbl.textContent = 'Cached';
+    } else {
+      pill.style.borderColor = '';
+      pill.style.color = '';
+      pill.style.background = '';
+      dot.style.background = '';
+      lbl.textContent = 'Live';
+    }
+
+    const now = new Date();
+    
+    data = data.filter(appt => {
+      const apptTime = new Date(appt.scheduledTime); // Filter out appointments 30+ minutes in the past
+      return (now - apptTime) < (30 * 60 * 1000); // keep if less than 30 mins old
+    });
+
+    let html = '<div class="table-header">'
+      /* + '<div class="col-label">#</div>' */
+      + '<div class="col-label">Client</div>'
+      + '<div class="col-label activity-col">Activity</div>'
+      + '<div class="col-label">Time</div>'
+      + '</div>';
+
+    data.forEach(function(appt, i) {
+      const client = appt.entities && appt.entities.client;
+      const activity = appt.entities && appt.entities.activity;
+      const first = client && client.firstName ? titleCase(client.firstName) : '?';
+      const last = client && client.lastName ? client.lastName.charAt(0) + '.' : '';
+      const cls = tagClass(activity && activity.externalId);
+      const time = formatTime(appt.scheduledTime);
+      let label = activity && activity.label ? activity.label : 'Service';
+        label = label.replace(/\s* - Computer or Tablet\s*/gi, '').trim(); // Remove unwanted text
+
+      html += '<div class="appointment-row">'
+        /* + '<div class="row-num">' + i + '</div>' */
+        + '<div class="client-cell">'
+        + '<span class="client-initial">' + first.charAt(0) + '</span>'
+        + '<span class="client-name">' + first + ' ' + last + '</span>'
+        + '</div>'
+        + '<div class="activity-col">'
+        + '<span class="activity-tag ' + cls + '"><span class="tag-dot"></span>' + label + '</span>'
+        + '</div>'
+        + '<div class="time-cell">' + time + '</div>'
+        + '</div>';
+    });
+
+    document.getElementById('table-wrap').innerHTML = html;
+    document.getElementById('footer-count').innerHTML =
+      'Showing <span>' + data.length + '</span> appointment' + (data.length !== 1 ? 's' : '') + ' remaining today'
+      + '<br> Made by Motobug'
+      + (live ? '' : ' &nbsp;<span style="color:var(--text-muted);font-size:0.7em">(cached snapshot — 2026-03-27)</span>');
+  }
+
+  async function loadData() {
+    document.getElementById('table-wrap').innerHTML = '<div class="state-msg"><div class="spinner"></div>Loading appointments&hellip;</div>';
+    document.getElementById('footer-count').textContent = '';
+    const result = await tryFetch();
+    if (!result.data.length) {
+      document.getElementById('table-wrap').innerHTML = '<div class="state-msg">No appointments found.</div>';
+      return;
+    }
+    renderTable(result.data, result.live);
+  }
+
+  loadData();
+  setInterval(loadData, 180000);
+</script>
+</body>
+</html>
