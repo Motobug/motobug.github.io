@@ -10,15 +10,15 @@
 <link href="https://db.onlinewebfonts.com/c/1a9e6d35945c3281c3f3dde2fa40ce32?family=Human+BBY+Web" rel="stylesheet" type="text/css"/>
 <style>
   :root {
-    --bg: #1a1720;
-    --surface: #242030;
+    --bg: #17141b;
+    --surface: #1f1e24;
     --border: #332e45;
     --accent: #ff9100;
     --accent-dim: rgba(255,224,0,0.12);
     --live: #56cd4c;
     --live-dim: #57cd4c40;
     --text-primary: #f0eef5;
-    --text-secondary: #b0a8c4;
+    --text-secondary: #f0eef5;
     --text-muted: #7d7594;
     --tag-dropoff: #1a2440;
     --tag-dropoff-text: #7aadea;
@@ -461,13 +461,6 @@
         <div class="next-appt-time" id="next-queue-name">—</div>
         <div class="next-appt-date" id="next-queue-time"></div>
       </div>
-      <div class="next-appt-badge next-queue-badge">
-        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="5" cy="3" r="2" stroke="currentColor" stroke-width="1.2"/>
-          <path d="M1.5 9c0-1.933 1.567-3.5 3.5-3.5S8.5 7.067 8.5 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-        </svg>
-        Awaiting Service
-      </div>
     </div>
     <div class="next-appt-card" id="next-appt-card" style="display:none">
       <div>
@@ -475,13 +468,7 @@
         <div class="next-appt-time" id="next-appt-time">—</div>
         <div class="next-appt-date" id="next-appt-date"></div>
       </div>
-      <div class="next-appt-badge">
-        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="5" cy="5" r="4" stroke="currentColor" stroke-width="1.2"/>
-          <path d="M5 3v2.5l1.5 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-        </svg>
-        Next Open Slot
-      </div>
+      
     </div>
   </div>
   <div class="footer">
@@ -554,7 +541,7 @@
         dateEl.textContent = '';
       }
     } catch(e) {
-      timeEl.textContent = 'Unavailable';
+      timeEl.textContent = 'See Agent';
       dateEl.textContent = '';
     }
     card.style.display = 'flex';
