@@ -158,20 +158,7 @@
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  .appointment-row:nth-child(1) { animation-delay: 0.05s; }
-  .appointment-row:nth-child(2) { animation-delay: 0.10s; }
-  .appointment-row:nth-child(3) { animation-delay: 0.15s; }
-  .appointment-row:nth-child(4) { animation-delay: 0.20s; }
-  .appointment-row:nth-child(5) { animation-delay: 0.25s; }
-  .appointment-row:nth-child(6) { animation-delay: 0.30s; }
-  .appointment-row:nth-child(7) { animation-delay: 0.35s; }
-  .appointment-row:nth-child(8) { animation-delay: 0.40s; }
-  .appointment-row:nth-child(9) { animation-delay: 0.45s; }
-  .appointment-row:nth-child(10) { animation-delay: 0.50s; }
-  .appointment-row:nth-child(11) { animation-delay: 0.55s; }
-  .appointment-row:nth-child(12) { animation-delay: 0.60s; }
-  .appointment-row:nth-child(13) { animation-delay: 0.65s; }
-  .appointment-row:nth-child(14) { animation-delay: 0.70s; }
+  .appointment-row { animation-delay: var(--row-delay, 0s); }
   .row-num {
     font-family: 'Inter', sans-serif; font-size: 0.78rem;
     color: var(--text-muted); font-weight: 500;
@@ -420,6 +407,98 @@
     align-items: flex-start;
   }
 }
+
+/* ── Store number pill ─────────────────────────────────────────────────────── */
+.store-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(160,120,255,0.08);
+  border: 1px solid rgba(160,120,255,0.22);
+  border-radius: 20px; padding: 4px 12px;
+  font-family: 'Inter', sans-serif; font-size: 0.72rem;
+  color: #c4b0f0; letter-spacing: 0.08em;
+  text-transform: uppercase; cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  margin-top: 6px;
+  white-space: nowrap;
+  user-select: none;
+}
+.store-pill:hover {
+  background: rgba(160,120,255,0.16);
+  border-color: rgba(160,120,255,0.4);
+  color: #ddd0ff;
+}
+.store-pill svg { opacity: 0.6; flex-shrink: 0; }
+
+/* ── Store modal overlay ───────────────────────────────────────────────────── */
+.store-modal-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(10, 8, 16, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.store-modal-overlay.visible {
+  opacity: 1; pointer-events: all;
+}
+.store-modal {
+  background: #1f1c2a;
+  border: 1px solid #3a3352;
+  border-radius: 12px;
+  padding: 32px 28px 24px;
+  width: 320px; max-width: calc(100vw - 40px);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+  transform: translateY(12px);
+  transition: transform 0.22s ease;
+}
+.store-modal-overlay.visible .store-modal {
+  transform: translateY(0);
+}
+.store-modal h2 {
+  font-family: 'Gnomon* Foreground', sans-serif;
+  font-size: 1.1rem; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.store-modal p {
+  font-family: 'Inter', sans-serif; font-size: 0.78rem;
+  color: var(--text-muted); margin-bottom: 20px; line-height: 1.5;
+}
+.store-modal input {
+  width: 100%; padding: 11px 14px;
+  background: #2a2638; border: 1px solid #3a3352;
+  border-radius: 6px; color: var(--text-primary);
+  font-family: 'Inter', sans-serif; font-size: 1.1rem;
+  letter-spacing: 0.12em; outline: none;
+  transition: border-color 0.2s;
+  margin-bottom: 16px;
+}
+.store-modal input:focus { border-color: rgba(160,120,255,0.55); }
+.store-modal input.invalid { border-color: rgba(255,80,80,0.6); }
+.store-modal-actions {
+  display: flex; gap: 10px; justify-content: flex-end;
+}
+.store-modal-cancel {
+  padding: 9px 16px;
+  background: transparent; border: 1px solid var(--border);
+  border-radius: 6px; color: var(--text-muted);
+  font-family: 'Inter', sans-serif; font-size: 0.78rem;
+  cursor: pointer; transition: all 0.2s;
+}
+.store-modal-cancel:hover { border-color: var(--text-muted); color: var(--text-primary); }
+.store-modal-save {
+  padding: 9px 20px;
+  background: rgba(160,120,255,0.15); border: 1px solid rgba(160,120,255,0.35);
+  border-radius: 6px; color: #ddd0ff;
+  font-family: 'Inter', sans-serif; font-size: 0.78rem;
+  cursor: pointer; transition: all 0.2s;
+}
+.store-modal-save:hover { background: rgba(160,120,255,0.25); border-color: rgba(160,120,255,0.55); }
+.store-modal-error {
+  font-family: 'Inter', sans-serif; font-size: 0.72rem;
+  color: #ff6b6b; margin-top: -10px; margin-bottom: 14px;
+  min-height: 16px;
+}
 </style>
 </head>
 <body>
@@ -444,7 +523,15 @@
       </div>
       <div class="logo-text">
         <h1>Appointments</h1>
-        <p>Store #820</p>
+        <p id="store-pill" class="store-pill" onclick="openStoreModal()">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 3.5L5 1.5L9 3.5V8.5H6.5V6H3.5V8.5H1V3.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+          Store #<span id="store-number-display">—</span>
+          <svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0.5">
+            <path d="M1.5 7.5L7.5 1.5M7.5 1.5H3M7.5 1.5V6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </p>
       </div>
     </div>
     <div class="header-meta">
@@ -484,34 +571,151 @@
   </div>
 </div>
 
-<script>
-  const API_URL = 'https://vps2.rpm22.com:8443/cors/https://servicescheduling.bestbuy.com/api/api/QueueBoard/pr?locationId=820';
+<!-- Store number modal -->
+<div class="store-modal-overlay" id="store-modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="store-modal">
+    <h2>Select Store</h2>
+    <p id="store-modal-desc">Enter your Best Buy store number to load appointments for that location.</p>
+    <input type="text" id="store-input" placeholder="e.g. 835" autocomplete="off" autocorrect="off" spellcheck="false"
+      oninput="clearModalError()" onkeydown="handleStoreKey(event)" />
+    <div class="store-modal-error" id="store-modal-error"></div>
+    <div class="store-modal-actions">
+      <button class="store-modal-cancel" id="store-modal-cancel" onclick="closeStoreModal()" style="display:none">Cancel</button>
+      <button class="store-modal-save" onclick="saveStore()">Save &amp; Load</button>
+    </div>
+  </div>
+</div>
 
-  // Build the next-available-appointment URL with dynamic dates (now → +7 days)
+<script>
+  // ── Store number ───────────────────────────────────────────────────────────
+  let storeId = null;
+
+  function getApiUrl() {
+    return 'https://vps2.rpm22.com:8443/cors/https://servicescheduling.bestbuy.com/api/api/QueueBoard/pr?locationId=' + storeId;
+  }
+
   function buildSlotUrl() {
     const startDate = new Date();
     const endDate = new Date(startDate);
     endDate.setDate(endDate.getDate() + 7);
     endDate.setHours(3, 59, 0, 0);
     return 'https://vps2.rpm22.com:8443/cors/https://servicescheduling.bestbuy.com/api/api/Appointment'
-      + '?locationId=820&programId=pr&activityId=pr-appointment'
+      + '?locationId=' + storeId + '&programId=pr&activityId=pr-appointment'
       + '&startDate=' + encodeURIComponent(startDate.toISOString())
       + '&endDate='   + encodeURIComponent(endDate.toISOString());
   }
 
-  // Format an ISO timestamp as Eastern Time (auto EST/EDT)
-  function formatAsEST(isoString) {
+  // ── Store modal logic ──────────────────────────────────────────────────────
+  function openStoreModal(isFirstLoad) {
+    const overlay = document.getElementById('store-modal-overlay');
+    const cancelBtn = document.getElementById('store-modal-cancel');
+    const desc = document.getElementById('store-modal-desc');
+    const input = document.getElementById('store-input');
+    // Pre-fill with current store if changing
+    if (!isFirstLoad && storeId) {
+      input.value = storeId === 'test' ? 'test' : storeId;
+      cancelBtn.style.display = '';
+      desc.textContent = 'Change your store number. The page will reload appointments for the new location.';
+    } else {
+      input.value = '';
+      cancelBtn.style.display = 'none';
+      desc.textContent = 'Enter your Best Buy store number to load appointments for that location.';
+    }
+    clearModalError();
+    overlay.classList.add('visible');
+    setTimeout(function() { input.focus(); input.select(); }, 220);
+  }
+
+  function closeStoreModal() {
+    document.getElementById('store-modal-overlay').classList.remove('visible');
+  }
+
+  function handleOverlayClick(e) {
+    // Only close if clicking the backdrop itself, not the modal box
+    if (e.target === document.getElementById('store-modal-overlay') && storeId) {
+      closeStoreModal();
+    }
+  }
+
+  function clearModalError() {
+    document.getElementById('store-modal-error').textContent = '';
+    document.getElementById('store-input').classList.remove('invalid');
+  }
+
+  function handleStoreKey(e) {
+    if (e.key === 'Enter') saveStore();
+    if (e.key === 'Escape' && storeId) closeStoreModal();
+  }
+
+  function setStorePill(id) {
+    const display = document.getElementById('store-number-display');
+    const pill = document.getElementById('store-pill');
+    if (id === 'test') {
+      display.textContent = 'Test Data';
+      pill.style.background = 'rgba(160,122,245,0.12)';
+      pill.style.borderColor = 'rgba(160,122,245,0.35)';
+      pill.style.color = '#c4b0ff';
+    } else {
+      display.textContent = id;
+      pill.style.background = '';
+      pill.style.borderColor = '';
+      pill.style.color = '';
+    }
+  }
+
+  function saveStore() {
+    const raw = document.getElementById('store-input').value.trim();
+
+    // Test mode keyword
+    if (raw.toLowerCase() === 'test') {
+      storeId = 'test';
+      localStorage.setItem('gs_store_id', 'test');
+      setStorePill('test');
+      closeStoreModal();
+      loadData();
+      loadNextAvailableSlot();
+      return;
+    }
+
+    const num = parseInt(raw, 10);
+    if (!raw || isNaN(num) || num < 1 || num > 9999 || !/^\d{1,4}$/.test(raw)) {
+      document.getElementById('store-modal-error').textContent = 'Please enter a valid store number (1–4 digits), or "test".';
+      document.getElementById('store-input').classList.add('invalid');
+      return;
+    }
+    storeId = String(num);
+    localStorage.setItem('gs_store_id', storeId);
+    setStorePill(storeId);
+    closeStoreModal();
+    loadData();
+    loadNextAvailableSlot();
+  }
+
+  function initStore() {
+    const saved = localStorage.getItem('gs_store_id');
+    if (saved && (saved === 'test' || /^\d{1,4}$/.test(saved))) {
+      storeId = saved;
+      setStorePill(storeId);
+      loadData();
+      loadNextAvailableSlot();
+    } else {
+      document.getElementById('table-wrap').innerHTML = '<div class="state-msg">Select a store to get started.</div>';
+      openStoreModal(true);
+    }
+  }
+
+   // Format an ISO timestamp as local time
+  function formatAsLocal(isoString) {
     const d = new Date(isoString);
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const timeStr = d.toLocaleTimeString('en-US', {
-      hour: 'numeric', minute: '2-digit', hour12: true,
-      timeZone: 'America/New_York'
+      hour: 'numeric', minute: '2-digit', hour12: true, timeZone: tz
     });
     const dateStr = d.toLocaleDateString('en-US', {
-      weekday: 'long', month: 'long', day: 'numeric',
-      timeZone: 'America/New_York'
+      weekday: 'long', month: 'long', day: 'numeric', timeZone: tz
     });
-    const tzParts = d.toLocaleTimeString('en-US', { timeZoneName: 'short', timeZone: 'America/New_York' });
-    const tzLabel = tzParts.includes('EDT') ? 'EDT' : 'EST';
+    const tzLabel = d.toLocaleTimeString('en-US', { timeZoneName: 'short', timeZone: tz })
+      .split(' ').pop();
     return { time: timeStr + ' ' + tzLabel, date: dateStr };
   }
 
@@ -519,6 +723,12 @@
     const card   = document.getElementById('next-appt-card');
     const timeEl = document.getElementById('next-appt-time');
     const dateEl = document.getElementById('next-appt-date');
+    if (storeId === 'test') {
+      timeEl.textContent = 'Test Mode';
+      dateEl.textContent = '';
+      card.style.display = 'flex';
+      return;
+    }
     try {
       const res = await fetch(buildSlotUrl(), { signal: AbortSignal.timeout(8000) });
       if (!res.ok) throw new Error('bad response');
@@ -533,7 +743,7 @@
         else if (Array.isArray(json) && json[0] && json[0].appointmentSlotTime) slotTime = json[0].appointmentSlotTime;
       }
       if (slotTime) {
-        const fmt = formatAsEST(slotTime);
+        const fmt = formatAsLocal(slotTime);
         timeEl.textContent = fmt.time;
         dateEl.textContent = fmt.date;
       } else {
@@ -549,7 +759,7 @@
 
   // ── Local test data ────────────────────────────────────────────────────────
   // Set USE_TEST_DATA = true to use this instead of the live API.
-  const USE_TEST_DATA = false;
+  const USE_TEST_DATA = false; // Replaced at runtime by storeId === 'test'
 
   function testTime(offsetMinutes) {
     return new Date(Date.now() + offsetMinutes * 60 * 1000).toISOString();
@@ -570,9 +780,9 @@
   // ──────────────────────────────────────────────────────────────────────────
 
   async function tryFetch() {
-    if (USE_TEST_DATA) return { data: TEST_DATA, live: false, test: true };
+    if (storeId === 'test') return { data: TEST_DATA, live: false, test: true };
     try {
-      const res = await fetch(API_URL, { signal: AbortSignal.timeout(6000) });
+      const res = await fetch(getApiUrl(), { signal: AbortSignal.timeout(6000) });
       if (!res.ok) throw new Error('bad response');
       const text = await res.text();
       const json = JSON.parse(text);
@@ -620,7 +830,8 @@
     return window.matchMedia('(orientation: portrait)').matches;
   }
 
-  function buildRowHtml(appt) {
+  function buildRowHtml(appt, index) {
+    const delay = ((index + 1) * 0.05).toFixed(2) + 's';
     const client = appt.entities && appt.entities.client;
     const activity = appt.entities && appt.entities.activity;
     const first = client && client.firstName ? titleCase(client.firstName) : '?';
@@ -635,7 +846,7 @@
       ? '<span class="checkedin-badge"><span class="checkedin-dot"></span>Checked In</span>'
       : '';
 
-    return '<div class="appointment-row' + (isCheckedIn ? ' checked-in' : '') + '">'
+    return '<div class="appointment-row' + (isCheckedIn ? ' checked-in' : '') + '" style="--row-delay:' + delay + '">'
       + '<div class="client-cell">'
       + '<span class="client-initial">' + first.charAt(0) + '</span>'
       + '<span class="client-name">' + first + ' ' + last + checkedInBadge + '</span>'
@@ -661,7 +872,7 @@
         + '<div class="col-label activity-col">Activity</div>'
         + '<div class="col-label">Time</div>'
         + '</div>';
-      slice.forEach(function(appt) { html += buildRowHtml(appt); });
+      slice.forEach(function(appt, i) { html += buildRowHtml(appt, i); });
       wrap.innerHTML = html;
       wrap.classList.remove('fading');
 
@@ -772,7 +983,7 @@
 
     document.getElementById('footer-count').innerHTML =
       'Showing <span>' + data.length + '</span> appointment' + (data.length !== 1 ? 's' : '') + ' remaining today'
-      + '<br> Made by Motobug'
+      + '<br>  Made by a dedicated agent in the northeast US'
       + (live || isTest ? '' : ' &nbsp;<span style="color:var(--text-muted);font-size:0.7em">(cached snapshot — 2026-03-27)</span>');
   }
 
@@ -789,10 +1000,10 @@
     renderTable(result.data, result.live, result.test);
   }
 
-  loadData();
-  loadNextAvailableSlot();
-  setInterval(loadData, 180000);
-  setInterval(loadNextAvailableSlot, 180000);
+  // Boot — ask for store if not saved, otherwise load immediately
+  initStore();
+  setInterval(function() { if (storeId) loadData(); }, 180000);
+  setInterval(function() { if (storeId) loadNextAvailableSlot(); }, 180000);
 </script>
 
 
