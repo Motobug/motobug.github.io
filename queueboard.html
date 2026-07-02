@@ -559,7 +559,7 @@
     </div>
   </div>
   <div class="footer">
-    <div class="footer-count" id="footer-count">Showing <span>5</span> appointments remaining today<br> Made by Motobug</div>
+    <div class="footer-count" id="footer-count">Showing <span>5</span> appointments remaining today<br> Made by a dedicated agent in the northeast US</div>
     <div class="live-pill" id="live-pill"><span class="live-dot" id="live-dot"></span><span id="live-label">Live</span></div>
     <button class="refresh-btn" onclick="loadData()">
       <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -967,7 +967,7 @@
     if (!data.length) {
       document.getElementById('table-wrap').innerHTML = '<div class="state-msg">No appointments found.</div>';
       document.getElementById('page-indicator').style.display = 'none';
-      document.getElementById('footer-count').innerHTML = 'Showing <span>0</span> appointments remaining today<br> Made by Motobug';
+      document.getElementById('footer-count').innerHTML = 'Showing <span>0</span> appointments remaining today<br> Made by a dedicated agent in the northeast US';
       if (pageTimer) clearInterval(pageTimer);
       updateNextInQueue([]);
       return;
@@ -994,7 +994,7 @@
     if (pageTimer) clearInterval(pageTimer);
     const result = await tryFetch();
     if (result.error) {
-      document.getElementById('table-wrap').innerHTML = '<div class="state-msg">Failed to load appointments. Maybe corporate got us?</div>';
+      document.getElementById('table-wrap').innerHTML = '<div class="state-msg">Failed to load appointments. Try refreshing to re-attempt data capture.</div>';
       return;
     }
     renderTable(result.data, result.live, result.test);
